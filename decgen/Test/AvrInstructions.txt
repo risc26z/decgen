@@ -61,6 +61,7 @@
 %flag Ijmp
 %flag Eijmp
 %flag Adiw
+%flag Des
 
 
 # bit pattern ----- flag(s) ------- code fragment ------------------
@@ -84,20 +85,24 @@
 001010..........                :   return "Or";
 001011..........                :   return "Mov";
 0011............                :   return "Cpi";
-0100............                :   return "Subi";
-0101............                :   return "Sbci";
+0101............                :   return "Subi";
+0100............                :   return "Sbci";
 0110............                :   return "Ori";
 0111............                :   return "Andi";
 10.0..0.........    [Ldd]       :   return "Ldd";
 10100...........    [Rc]        :   return "LdsRc";
 10.0..1.........    [Ldd]       :   return "Std";
 10101...........    [Rc]        :   return "StsRc";
-1001000.....0000                :   return "Lds";
-1001001.....0000                :   return "Sts";
+1001000.....0000    [!Rc]       :   return "Lds";
+1001001.....0000    [!Rc]       :   return "Sts";
 1001000.....0001    [LdExt]     :   return "LdZincr";
+1001000.....0010	[LdExt]		:	return "LdZdecr";
 1001000.....1001    [LdExt]     :   return "LdYincr";
+1001000.....1010    [LdExt]     :   return "LdYdecr";
 1001001.....0001    [LdExt]     :   return "StZincr";
+1001001.....0010    [LdExt]     :   return "StZdecr";
 1001001.....1001    [LdExt]     :   return "StYincr";
+1001001.....1010    [LdExt]     :   return "StZdecr";
 1001000.....0100    [LpmZ]      :   return "LpmZ";
 1001000.....0110    [Elpm]      :   return "ElpmZ";
 1001000.....0101    [LpmZ]      :   return "LpmZincr";
@@ -137,7 +142,7 @@
 1001010100001001    [Ijmp]      :   return "ICall";
 1001010100011001    [Eijmp]     :   return "EICall";
 1001010.....1010                :   return "Dec";
-10010100....1011                :   return "Des";
+10010100....1011    [Des]       :   return "Des";
 1001010.....110.    [Jmp]       :   return "Jmp";
 1001010.....111.    [Jmp]       :   return "Call";
 10010110........    [Adiw]      :   return "Adiw";
