@@ -133,36 +133,6 @@ namespace InstDecoderGenerator {
             // dispatch according to the literal text of the identifier
             NextExpect(Token.Type.Identifier);
             switch (lexer.Crnt.String) {
-            // %fileStart FRAGMENT+
-            case "fileStart":
-                NextExpect(Token.Type.CodeFragment);
-                ParseFragments(spec.FileStart);
-                break;
-            // %fileEnd FRAGMENT+
-            case "fileEnd":
-                NextExpect(Token.Type.CodeFragment);
-                ParseFragments(spec.FileEnd);
-                break;
-            // %enumStart FRAGMENT+
-            case "enumStart":
-                NextExpect(Token.Type.CodeFragment);
-                ParseFragments(spec.EnumStart);
-                break;
-            // %enumEnd FRAGMENT+
-            case "enumEnd":
-                NextExpect(Token.Type.CodeFragment);
-                ParseFragments(spec.EnumEnd);
-                break;
-            // %decodeFlags FRAGMENT+
-            case "decodeFlags":
-                NextExpect(Token.Type.CodeFragment);
-                ParseFragments(spec.DecodeFlags);
-                break;
-            // %decodeFlags FRAGMENT+
-            case "fetch":
-                NextExpect(Token.Type.CodeFragment);
-                ParseFragments(spec.FetchFrag);
-                break;
             // %bits INTEGER
             case "bits":
                 NextExpect(Token.Type.Integer);
@@ -198,7 +168,23 @@ namespace InstDecoderGenerator {
                 break;
 
             default:
-                SyntaxError("Unknown directive");
+                CodeFragment? frag = lexer.Crnt.String switch
+                {
+                    "fileStart" => spec.FileStart,
+                    "fileEnd" => spec.FileEnd,
+                    "enumStart" => spec.EnumStart,
+                    "enumEnd" => spec.EnumEnd,
+                    "decodeFlags" => spec.DecodeFlags,
+                    "fetch" => spec.FetchFrag,
+                    _ => null
+                };
+
+                if (frag != null) {
+                    NextExpect(Token.Type.CodeFragment);
+                    ParseFragments(frag);
+                } else {
+                    SyntaxError("Unknown directive");
+                }
                 break;
             }
         }
